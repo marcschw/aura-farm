@@ -285,6 +285,7 @@ h1 .leaf{-webkit-text-fill-color:initial}
         </div>
         <div class="chips" id="quickChips"></div>
         <div class="chips" id="mediumChips"></div>
+        <div class="chips" id="blockChips"></div>
       </div>
       <div id="list"></div>
     </section>
@@ -428,6 +429,7 @@ const MEDIA={
 };
 const TIER_COLOR={S:"var(--s)",A:"var(--a)",B:"var(--b)",C:"var(--c)"};
 const DOSE_CHIP={quick:"⚡ quick",episode:"📺 1 Folge",film:"🎬 Film",season:"📚 Staffel",konzept:"💡 Konzept",sample:"👀 Sample",play:"🎮 Play"};
+const BLOCKS={Web:"🌐",OOP:"🧱",DB:"🗄️",GUI:"🖱️",KI:"🤖",Biostat:"📊",Bioinf:"🧬",Allgemein:"🧩",Rapport:"🧸"};
 const LEVELS=[
   {min:0,t:"NPC Teacher"},{min:150,t:"Lowkey Aware"},{min:400,t:"Got Rizz"},
   {min:800,t:"Sigma Educator 🗿"},{min:1400,t:"Final Boss of Aura 🔥"}
@@ -714,12 +716,13 @@ function toggleSub(itemId,subId,ev){
 }
 
 /* ============ FILTER / SORT ============ */
-const filter={medium:null,quick:{essential:false,fast:false,open:false,games:false},search:"",sort:"tier"};
+const filter={medium:null,block:null,quick:{essential:false,fast:false,open:false,games:false},search:"",sort:"tier"};
 let vibeOrder=null;
 const expanded=new Set();
 function visibleItems(){
   let items=CATALOG.slice();
   if(filter.medium)items=items.filter(i=>i.medium===filter.medium);
+  if(filter.block)items=items.filter(i=>i.block===filter.block);
   if(filter.quick.essential)items=items.filter(i=>i.tier==="S");
   if(filter.quick.fast)items=items.filter(i=>i.estMinutes<=15);
   if(filter.quick.open)items=items.filter(i=>!state.checked[i.id]);
@@ -864,6 +867,11 @@ function renderControls(){
     +Object.keys(MEDIA).filter(m=>CATALOG.some(i=>i.medium===m)).map(m=>
       '<button class="chip-btn'+(filter.medium===m?" on":"")+'" data-medium="'+m+'">'+MEDIA[m].e+' '+MEDIA[m].n+'</button>'
     ).join("");
+  $("#blockChips").innerHTML=
+    '<button class="chip-btn'+(filter.block===null?" on":"")+'" data-block="">'+(state.slang?"🧩 Alle Blöcke":"🧩 Alle Fächer")+'</button>'
+    +Object.keys(BLOCKS).filter(b=>CATALOG.some(i=>i.block===b)).map(b=>
+      '<button class="chip-btn'+(filter.block===b?" on":"")+'" data-block="'+b+'">'+BLOCKS[b]+' '+b+'</button>'
+    ).join("");
 }
 let activeView="grind";
 function renderActiveView(){
@@ -939,7 +947,7 @@ function closeSheet(){
 
 /* ============ EVENTS ============ */
 document.addEventListener("click",(ev)=>{
-  const el=ev.target.closest("[data-check],[data-subcheck],[data-open],[data-exp],[data-how],[data-quick],[data-medium],[data-random],.tab");
+  const el=ev.target.closest("[data-check],[data-subcheck],[data-open],[data-exp],[data-how],[data-quick],[data-medium],[data-block],[data-random],.tab");
   if(!el)return;
   if(el.dataset.check!==undefined&&el.dataset.check!==""){
     toggleItem(el.dataset.check,ev);
@@ -969,6 +977,10 @@ document.addEventListener("click",(ev)=>{
   }
   if(el.dataset.medium!==undefined){
     filter.medium=el.dataset.medium||null;
+    renderControls();renderList();return;
+  }
+  if(el.dataset.block!==undefined){
+    filter.block=el.dataset.block||null;
     renderControls();renderList();return;
   }
   if(el.dataset.random){
