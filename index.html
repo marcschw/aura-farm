@@ -1,0 +1,1042 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AURA FARM 🌱 — der Pop-Culture-Grind</title>
+<meta name="description" content="Gamifizierte Pop-Culture-Checkliste für Lehrer:innen. Farm Aura, versteh deine Schüler:innen.">
+<meta name="theme-color" content="#0b0b16">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{
+  --bg:#0b0b16; --bg2:#11111f; --card:#15152400; --ink:#f1f0fa; --muted:#9b99b3;
+  --grad:linear-gradient(120deg,#a855f7,#22d3ee 55%,#a3e635);
+  --s:#c9ff3d; --a:#3de4ff; --b:#b07cff; --c:#9aa0ab;
+  --radius:20px; --nav-h:62px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;color:var(--ink);background:var(--bg);
+  font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background-image:
+    radial-gradient(900px 500px at 85% -10%,rgba(168,85,247,.22),transparent 60%),
+    radial-gradient(700px 420px at -10% 12%,rgba(34,211,238,.13),transparent 60%),
+    radial-gradient(800px 600px at 50% 110%,rgba(163,230,53,.08),transparent 60%);
+  background-attachment:fixed;
+  padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 16px);
+}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+input,select{font:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 14px}
+
+/* ---------- header ---------- */
+header{padding:18px 0 6px}
+.logo-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1{
+  margin:0;font-size:clamp(28px,7vw,40px);font-weight:900;letter-spacing:.5px;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 18px rgba(168,85,247,.45));
+}
+h1 .leaf{-webkit-text-fill-color:initial}
+.subtitle{margin:4px 0 0;color:var(--muted);font-size:13px;letter-spacing:.4px}
+#modeToggle{
+  flex:none;min-height:44px;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);transition:.2s;
+}
+#modeToggle:active{transform:scale(.96)}
+
+/* ---------- stats ---------- */
+#stats{
+  margin-top:14px;border-radius:24px;padding:16px;position:relative;overflow:hidden;
+  background:linear-gradient(150deg,rgba(168,85,247,.16),rgba(34,211,238,.10) 50%,rgba(163,230,53,.10));
+  border:1px solid rgba(255,255,255,.12);
+}
+#stats::after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle at 75% 20%,rgba(255,255,255,.10),transparent 45%);pointer-events:none}
+.stats-top{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.aura-big{font-size:clamp(40px,11vw,58px);font-weight:900;line-height:1;
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.aura-label{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.level-box{text-align:right}
+.level-title{font-size:17px;font-weight:800}
+.streak{font-size:13px;color:var(--muted);margin-top:3px}
+.bar{height:10px;border-radius:99px;background:rgba(255,255,255,.10);margin-top:14px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--grad);transition:width .5s ease;box-shadow:0 0 12px rgba(163,230,53,.6)}
+.bar-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px}
+
+/* ---------- controls ---------- */
+#controls{position:sticky;top:0;z-index:30;background:linear-gradient(var(--bg) 75%,transparent);padding:10px 0 4px;margin-top:6px}
+.ctl-row{display:flex;gap:8px;margin-bottom:8px}
+#search{
+  flex:1;min-height:44px;padding:10px 14px;border-radius:14px;color:var(--ink);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);outline:none;
+}
+#search::placeholder{color:var(--muted)}
+#search:focus{border-color:rgba(168,85,247,.7)}
+#sortSel{
+  min-height:44px;max-width:46%;padding:10px 8px;border-radius:14px;color:var(--ink);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);outline:none;
+}
+#sortSel option{background:#1a1a2c;color:var(--ink)}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:2px 0 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip-btn{
+  flex:none;min-height:38px;padding:7px 13px;border-radius:999px;font-size:13px;font-weight:600;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);color:var(--muted);
+  transition:.15s;white-space:nowrap;
+}
+.chip-btn.on{background:linear-gradient(120deg,rgba(168,85,247,.35),rgba(34,211,238,.3));color:#fff;border-color:rgba(168,85,247,.7)}
+.chip-btn:active{transform:scale(.95)}
+
+/* ---------- cards ---------- */
+#list{display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.card{
+  position:relative;border-radius:var(--radius);overflow:hidden;
+  background:linear-gradient(140deg,hsl(var(--h) 45% 16% /.92),hsl(var(--h) 40% 9% /.92));
+  border:1px solid hsl(var(--h) 50% 38% /.45);
+  transition:transform .12s ease, box-shadow .2s;
+}
+.card.done{opacity:.78}
+.card.done .card-title{text-decoration:line-through;text-decoration-color:rgba(255,255,255,.4);text-decoration-thickness:2px}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--tc)}
+.card-main{display:flex;gap:12px;padding:13px 13px 13px 16px;align-items:flex-start}
+.poster{
+  flex:none;width:54px;height:54px;border-radius:16px;display:grid;place-items:center;font-size:30px;
+  background:hsl(var(--h) 55% 24% /.7);border:1px solid hsl(var(--h) 55% 45% /.4);
+}
+.card-body{flex:1;min-width:0;cursor:pointer}
+.chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:5px;align-items:center}
+.tier-pill{font-size:10.5px;font-weight:900;letter-spacing:.5px;padding:3px 8px;border-radius:99px;color:#0b0b16;background:var(--tc)}
+.mini{font-size:11px;color:var(--muted);background:rgba(255,255,255,.07);padding:3px 8px;border-radius:99px;white-space:nowrap}
+.card-title{margin:0;font-size:15.5px;font-weight:800;line-height:1.25;word-wrap:break-word}
+.teach{margin:5px 0 0;font-size:12.5px;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card-side{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px}
+.checkbtn{
+  width:48px;height:48px;border-radius:16px;border:2px solid hsl(var(--h) 60% 55% /.6);
+  display:grid;place-items:center;font-size:22px;color:transparent;transition:.18s;background:rgba(255,255,255,.04);
+}
+.checkbtn.on{background:var(--grad);color:#0b0b16;border-color:transparent;box-shadow:0 0 16px rgba(163,230,53,.55)}
+.pts{font-size:11.5px;font-weight:800;color:var(--tc)}
+.pro-stamp{
+  position:absolute;top:10px;right:64px;transform:rotate(8deg);
+  font-size:10px;font-weight:900;letter-spacing:1px;padding:4px 9px;border-radius:8px;
+  background:rgba(163,230,53,.18);border:1.5px solid var(--s);color:var(--s);
+  text-shadow:0 0 8px rgba(163,230,53,.8);
+}
+.subbar{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;
+  padding:8px 14px;border-top:1px dashed hsl(var(--h) 50% 40% /.4);width:100%;
+  font-size:13px;font-weight:700;color:var(--muted);
+}
+.subbar .prog{color:var(--ink)}
+.subbar .arr{transition:transform .2s}
+.card.exp .subbar .arr{transform:rotate(180deg)}
+.subs{display:none;padding:2px 14px 12px;flex-direction:column;gap:6px}
+.card.exp .subs{display:flex}
+.sub{
+  border-radius:14px;background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.08);overflow:hidden;
+}
+.sub-row{display:flex;align-items:center;gap:10px;padding:8px 10px;min-height:48px}
+.subcheck{
+  flex:none;width:34px;height:34px;border-radius:11px;border:2px solid rgba(255,255,255,.3);
+  display:grid;place-items:center;font-size:16px;color:transparent;transition:.15s;
+}
+.subcheck.on{background:var(--grad);color:#0b0b16;border-color:transparent}
+.sub-task{flex:1;font-size:13.5px;font-weight:600;cursor:pointer;line-height:1.3}
+.sub-q{flex:none;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:rgba(255,255,255,.08);color:var(--muted);font-weight:800}
+.sub-how{display:none;padding:0 12px 10px;font-size:12.5px;color:var(--muted);line-height:1.45}
+.sub.how-open .sub-how{display:block}
+.sub.done .sub-task{text-decoration:line-through;opacity:.65}
+
+/* ---------- quests ---------- */
+.quest{
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;position:relative;overflow:hidden;
+  background:linear-gradient(140deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.12);
+}
+.quest.done{border-color:rgba(163,230,53,.55);background:linear-gradient(140deg,rgba(163,230,53,.12),rgba(34,211,238,.06))}
+.quest h3{margin:0 0 4px;font-size:16px}
+.quest p{margin:0 0 8px;font-size:12.5px;color:var(--muted);line-height:1.4}
+.quest .q-meta{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:700}
+.quest .q-badge{color:var(--s)}
+.quest .bar{margin-top:8px}
+
+/* ---------- profile ---------- */
+.panel{
+  border-radius:var(--radius);padding:16px;margin-bottom:14px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11);
+}
+.panel h3{margin:0 0 10px;font-size:15px;letter-spacing:.3px}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat-cell{border-radius:14px;padding:12px;background:rgba(0,0,0,.25);text-align:center}
+.stat-cell b{display:block;font-size:22px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat-cell span{font-size:11.5px;color:var(--muted)}
+.badges{display:flex;flex-wrap:wrap;gap:8px}
+.badge{
+  font-size:12px;font-weight:700;padding:8px 12px;border-radius:12px;
+  background:rgba(163,230,53,.13);border:1px solid rgba(163,230,53,.5);color:#dfffa3;
+}
+.badge.locked{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.12);color:var(--muted);opacity:.6;filter:grayscale(1)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:10px 18px;
+  border-radius:14px;font-weight:800;font-size:14px;transition:.15s;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);
+}
+.btn:active{transform:scale(.96)}
+.btn.primary{background:var(--grad);color:#0b0b16;border:0}
+.btn.danger{background:rgba(255,80,80,.12);border-color:rgba(255,80,80,.5);color:#ff9a9a}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+#importArea{width:100%;min-height:70px;border-radius:12px;background:rgba(0,0,0,.3);color:var(--ink);border:1px solid rgba(255,255,255,.15);padding:10px;margin:8px 0;font-size:12px}
+
+/* ---------- nav ---------- */
+#tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
+  display:flex;background:rgba(13,13,24,.92);backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.1);
+}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;font-weight:700;color:var(--muted)}
+.tab .ico{font-size:21px}
+.tab.on{color:#fff}
+.tab.on .ico{filter:drop-shadow(0 0 8px rgba(163,230,53,.8))}
+
+/* ---------- sheet ---------- */
+#sheetWrap{position:fixed;inset:0;z-index:80}
+#sheetBg{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px)}
+#sheet{
+  position:absolute;left:0;right:0;bottom:0;max-height:86vh;overflow-y:auto;
+  background:#15152a;border-radius:26px 26px 0 0;border-top:1px solid rgba(255,255,255,.18);
+  padding:10px 18px calc(24px + env(safe-area-inset-bottom));
+  animation:up .25s ease;
+}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet-grip{width:44px;height:5px;border-radius:99px;background:rgba(255,255,255,.25);margin:4px auto 14px}
+.sheet-head{display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.sheet-head .poster{width:64px;height:64px;font-size:36px}
+.sheet-head h2{margin:0;font-size:19px;line-height:1.25}
+.sheet-sec{margin:14px 0}
+.sheet-sec h4{margin:0 0 6px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.sheet-sec p{margin:0;font-size:14px;line-height:1.5}
+.pack-list{margin:0;padding-left:20px;font-size:13.5px;line-height:1.7;color:var(--ink)}
+
+/* ---------- toast / fx ---------- */
+#toasts{position:fixed;left:0;right:0;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px);z-index:90;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.toast{
+  max-width:88vw;padding:11px 18px;border-radius:14px;font-size:13.5px;font-weight:700;text-align:center;
+  background:rgba(20,20,38,.95);border:1px solid rgba(168,85,247,.6);box-shadow:0 6px 24px rgba(0,0,0,.5);
+  animation:toast-in .25s ease, toast-out .3s ease 2.4s forwards;
+}
+@keyframes toast-in{from{transform:translateY(14px);opacity:0}}
+@keyframes toast-out{to{transform:translateY(8px);opacity:0}}
+.spark{position:fixed;z-index:95;pointer-events:none;font-size:16px;animation:fly .8s ease-out forwards}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+#levelup{
+  position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:radial-gradient(circle at 50% 45%,rgba(168,85,247,.55),rgba(11,11,22,.96) 70%);
+  backdrop-filter:blur(4px);text-align:center;padding:30px;animation:toast-in .3s ease;
+}
+#levelup .big{font-size:64px;animation:pulse 1s infinite alternate}
+@keyframes pulse{to{transform:scale(1.15);filter:drop-shadow(0 0 24px rgba(163,230,53,.9))}}
+#levelup h2{font-size:30px;margin:0;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+#levelup p{color:var(--ink);font-size:17px;font-weight:700;margin:0}
+.empty-msg{text-align:center;color:var(--muted);padding:40px 20px;font-size:14.5px;line-height:1.6}
+.section-h{margin:18px 0 12px;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+[hidden]{display:none !important}
+@media(min-width:700px){
+  .card-title{font-size:17px}
+  #list{gap:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo-row">
+      <div>
+        <h1>AURA FARM <span class="leaf">🌱</span></h1>
+        <p class="subtitle" id="subtitle">der Pop-Culture-Grind</p>
+      </div>
+      <button id="modeToggle" title="Slang umschalten"></button>
+    </div>
+    <div id="stats">
+      <div class="stats-top">
+        <div>
+          <div class="aura-big" id="auraNum">0</div>
+          <div class="aura-label">Aura</div>
+        </div>
+        <div class="level-box">
+          <div class="level-title" id="levelTitle"></div>
+          <div class="streak" id="streakLine"></div>
+        </div>
+      </div>
+      <div class="bar"><i id="levelBar"></i></div>
+      <div class="bar-meta"><span id="levelNext"></span><span id="pctDone"></span></div>
+    </div>
+  </header>
+
+  <main>
+    <section id="view-grind">
+      <div id="controls">
+        <div class="ctl-row">
+          <input id="search" type="search" autocomplete="off">
+          <select id="sortSel"></select>
+        </div>
+        <div class="chips" id="quickChips"></div>
+        <div class="chips" id="mediumChips"></div>
+      </div>
+      <div id="list"></div>
+    </section>
+
+    <section id="view-quests" hidden>
+      <h2 class="section-h" id="questsHead"></h2>
+      <div id="questList"></div>
+    </section>
+
+    <section id="view-profil" hidden>
+      <h2 class="section-h" id="profilHead"></h2>
+      <div class="panel">
+        <div class="stat-grid" id="statGrid"></div>
+      </div>
+      <div class="panel">
+        <h3 id="badgesHead"></h3>
+        <div class="badges" id="badgeShelf"></div>
+      </div>
+      <div class="panel">
+        <h3 id="dataHead"></h3>
+        <div class="btn-row">
+          <button class="btn" id="exportBtn"></button>
+          <button class="btn" id="importToggleBtn"></button>
+        </div>
+        <div id="importBox" hidden>
+          <textarea id="importArea" placeholder='{"checked":{...}}'></textarea>
+          <button class="btn primary" id="importBtn"></button>
+        </div>
+      </div>
+      <div class="panel">
+        <button class="btn danger" id="resetBtn"></button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav id="tabs">
+  <button class="tab on" data-view="grind"><span class="ico">🌱</span><span id="tabGrind">Grind</span></button>
+  <button class="tab" data-view="quests"><span class="ico">🏆</span><span>Quests</span></button>
+  <button class="tab" data-view="profil"><span class="ico">🧑‍🌾</span><span id="tabProfil">Profil</span></button>
+</nav>
+
+<div id="sheetWrap" hidden>
+  <div id="sheetBg"></div>
+  <div id="sheet"></div>
+</div>
+<div id="toasts"></div>
+<div id="levelup" hidden></div>
+
+<script>
+'use strict';
+/* ============ KATALOG (aus content.json) ============ */
+const CATALOG=[
+{"id":"brainrot","title":"Italian Brainrot (Tralalero Tralala, Ballerina Cappuccina, Tung Tung Sahur, Bombardiro Crocodilo …)","medium":"meme","tier":"S","points":50,"estMinutes":10,"dose":"quick","doseLabel":"3–4 Clips scrollen","teachUse":"Maskottchen + LIVE-Beispiel für generative KI (Bild/Stimme). Wichtigster Meme-Code 2026.","block":"KI","platform":"YouTube","url":"https://www.youtube.com/results?search_query=italian+brainrot"},
+{"id":"spotify-wrapped","title":"Spotify Wrapped","medium":"musik","tier":"S","points":50,"estMinutes":10,"dose":"konzept","doseLabel":"eigenes Wrapped + Aufbau","teachUse":"Rückgrat Biostatistik: Top-Artists=Modus, Minuten=Summe/Mittel, Genres=kategoriale Verteilung.","block":"Biostat","platform":"Spotify","url":"https://www.spotify.com/wrapped/"},
+{"id":"chatgpt","title":"ChatGPT","medium":"app","tier":"S","points":50,"estMinutes":10,"dose":"quick","doseLabel":"selbst nutzen","teachUse":"84% nutzen es. KI-Block + „Tool vs. Verständnis“ + Debug-the-AI.","block":"KI","platform":"Web","url":"https://chatgpt.com"},
+{"id":"minecraft","title":"Minecraft (+ Minecraft Movie 2025)","medium":"game","tier":"S","points":50,"estMinutes":40,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"Lieblingsspiel #1. Seeds/procedural generation = Zufall & Algorithmen. Crafting = Komposition.","block":"OOP","platform":"PC/Mobile","url":"https://www.youtube.com/results?search_query=minecraft+movie+chicken+jockey","subChecks":[{"id":"mc1","task":"Überlebe die erste Nacht","how":"Bau dir vor Sonnenuntergang ein simples Shelter aus Holz/Dirt, sonst spawnen Zombies & Skelette.","points":5},{"id":"mc2","task":"Craft Schwert + Spitzhacke","how":"Bäume hauen → Planks → Sticks → im Crafting-Table (2x2/3x3) kombinieren.","points":5},{"id":"mc3","task":"Triff einen Creeper und überlebe","how":"Grünes Monster, das zischt & explodiert — wegrennen oder zuschlagen bevor es hochgeht.","points":5},{"id":"mc4","task":"Generiere eine Welt mit Seed-Code","how":"Bei „Neue Welt“ einen Seed (Zahl/Wort) eingeben — gleicher Seed = exakt gleiche Welt = dein Pseudo-Zufall-Lehrbeispiel.","points":5},{"id":"mc5","task":"Bau irgendwas Eigenes","how":"Blöcke abbauen & platzieren — das namensgebende Kreativ-Prinzip.","points":5}]},
+{"id":"stranger-things","title":"Stranger Things (S5 = Finale)","medium":"serie","tier":"S","points":50,"estMinutes":50,"dose":"episode","doseLabel":"S1E1 reicht für den Vibe","teachUse":"Web-Apps-Skin: Upside Down = Test- vs. Produktivumgebung. Hawkins Lab = Forschungslabor.","block":"Web","platform":"Netflix","url":null},
+{"id":"wednesday","title":"Wednesday (S2)","medium":"serie","tier":"S","points":50,"estMinutes":50,"dose":"episode","doseLabel":"1 charakteristische Folge","teachUse":"OOP-Skin (Blutlinie/Vererbung) + Forensik-Skin für Diagnostik/Statistik. Breit beliebt.","block":"OOP","platform":"Netflix","url":null},
+{"id":"cassandra","title":"Cassandra (dt. KI-Thriller)","medium":"serie","tier":"S","points":50,"estMinutes":50,"dose":"episode","doseLabel":"1 Folge (kurze Serie, ggf. ganz)","teachUse":"KI-Block-Skin: KI im Haushalt dreht durch = Training, Kontrolle, Bias. Lokal & breit.","block":"KI","platform":"Netflix","url":null},
+{"id":"squid-game","title":"Squid Game (S3)","medium":"serie","tier":"S","points":50,"estMinutes":55,"dose":"episode","doseLabel":"die „Rotlicht-Grünlicht“-Folge","teachUse":"Gameshow-MECHANIK (stilisiert!): Ampel, Masken, Runden — nur Symbole, keine Gewalt-Clips.","block":"GUI","platform":"Netflix","url":null},
+{"id":"are-you-the-one","title":"Are You The One?","medium":"reality","tier":"S","points":50,"estMinutes":45,"dose":"episode","doseLabel":"1 Folge","teachUse":"DB-Skin: Matching-Algorithmus = JOIN. Biostat: Wahrscheinlichkeit/Kombinatorik.","block":"DB","platform":"RTL+","url":null},
+{"id":"kpop-demon-hunters","title":"KPop Demon Hunters","medium":"film","tier":"A","points":30,"estMinutes":100,"dose":"film","doseLabel":"der Film (Netflix-Rekord)","teachUse":"Cross-Media-Phänomen. Cold-Open „KI/Animation in Kultur“. Soundtrack überall.","block":"KI","platform":"Netflix","url":null},
+{"id":"pokemon","title":"Pokémon","medium":"anime","tier":"A","points":30,"estMinutes":15,"dose":"konzept","doseLabel":"Typen-Tabelle + Nostalgie","teachUse":"OOP: Typen=Klassen, Entwicklung=Vererbung. KI: Training=ML. Aktuell + Kindheit.","block":"OOP","platform":"diverse","url":null},
+{"id":"roblox","title":"Roblox („Steal a Brainrot“)","medium":"game","tier":"A","points":30,"estMinutes":20,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"Drop-Rates/RNG = Zufall & Verteilungen. Kulturzentrum der Jüngeren.","block":"Biostat","platform":"PC/Mobile","url":"https://www.roblox.com","subChecks":[{"id":"rb1","task":"Spiel 1 Runde „Steal a Brainrot“","how":"In der Suche öffnen — Brainrot-Figuren sammeln/anderen klauen.","points":5},{"id":"rb2","task":"Öffne ein zweites Experience","how":"Roblox ist eine Plattform, nicht EIN Spiel — Startseite zeigt tausende UGC-Games.","points":5},{"id":"rb3","task":"Schau dir die Robux-Logik an","how":"In-Game-Währung — verstehen wie Monetarisierung/Items laufen.","points":5}]},
+{"id":"fortnite","title":"Fortnite","medium":"game","tier":"A","points":30,"estMinutes":25,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"Battle Pass = Progressions-Metapher für „neue Regel pro Staffel“. Loot = Wahrscheinlichkeit.","block":"Allgemein","platform":"PC/Konsole","url":null,"subChecks":[{"id":"fn1","task":"Lande & überlebe 5 Minuten","how":"Aus dem Battle-Bus springen, Items looten, dem Storm-Kreis ausweichen.","points":5},{"id":"fn2","task":"Schau dir den Battle Pass an","how":"Tab oben — Belohnungen schaltest du mit XP frei (= genau deine Staffel-Progression).","points":5},{"id":"fn3","task":"Bau eine Rampe oder Wand","how":"Build-Taste, Material sammeln (Wände einhauen) — die namensgebende Mechanik.","points":5}]},
+{"id":"f1-dts","title":"F1 / Drive to Survive","medium":"serie","tier":"A","points":30,"estMinutes":45,"dose":"episode","doseLabel":"1 DTS-Folge","teachUse":"Telemetrie=Daten, Regression/GLM. Boxenstopp=Performance. Stark steigend bei jungen Fans.","block":"Biostat","platform":"Netflix","url":null},
+{"id":"joko-klaas","title":"Joko & Klaas / „Wer stiehlt mir die Show?“","medium":"gameshow","tier":"A","points":30,"estMinutes":40,"dose":"episode","doseLabel":"1 Folge/Clips","teachUse":"DIE Gameshow-Energie, die sie wirklich schauen. Vorlage fürs Gameshow-Format (Usability).","block":"GUI","platform":"ProSieben/Joyn","url":null},
+{"id":"adolescence","title":"Adolescence","medium":"serie","tier":"A","points":30,"estMinutes":50,"dose":"episode","doseLabel":"1 Folge (heavy — vorab sichten!)","teachUse":"Medienkompetenz: Social-Media-Radikalisierung. Schwere Themen — Clips vorab prüfen.","block":"Allgemein","platform":"Netflix","url":null},
+{"id":"one-piece","title":"One Piece (Live-Action S2, 2026)","medium":"anime","tier":"A","points":30,"estMinutes":20,"dose":"konzept","doseLabel":"wissen worum's geht","teachUse":"Riesige Kohorten-Überschneidung. Anime-Archetypen (Mentor/Rivale) für Charaktere.","block":"Allgemein","platform":"Netflix","url":null},
+{"id":"jurassic-rebirth","title":"Jurassic World: Rebirth","medium":"film","tier":"A","points":30,"estMinutes":120,"dose":"film","doseLabel":"Film (oder Trailer)","teachUse":"Bioinf-Station „Leben designen“: DNA, Sequenzen, „life finds a way“. Kinohit 2025.","block":"Bioinf","platform":"Kino","url":null},
+{"id":"avatar-tla","title":"Avatar – Der Herr der Elemente","medium":"serie","tier":"A","points":30,"estMinutes":25,"dose":"episode","doseLabel":"1 Folge","teachUse":"Vier Nationen = fertige Metapher für Klassifikation/Clustering. Gen-Z-Kult.","block":"KI","platform":"Netflix","url":null},
+{"id":"gravity-falls","title":"Gravity Falls","medium":"serie","tier":"A","points":30,"estMinutes":25,"dose":"episode","doseLabel":"1 Folge","teachUse":"Codes/Chiffren in jeder Folge = Escape-Room-Gold. Kultstatus.","block":"Allgemein","platform":"Disney+","url":null},
+{"id":"tiktok","title":"TikTok","medium":"app","tier":"A","points":30,"estMinutes":15,"dose":"quick","doseLabel":"For-You-Page scrollen","teachUse":"Zentrale Plattform (64%, 83% täglich). Quelle aller Memes/Trends/Slang.","block":"Allgemein","platform":"Mobile","url":null},
+{"id":"youtube","title":"YouTube","medium":"app","tier":"A","points":30,"estMinutes":10,"dose":"quick","doseLabel":"kennst du","teachUse":"Universal-Second-Screen (83% regelmäßig). Hub für Creator-Kultur.","block":"Allgemein","platform":"Web","url":"https://youtube.com"},
+{"id":"photomath","title":"Photomath","medium":"app","tier":"A","points":30,"estMinutes":10,"dose":"quick","doseLabel":"einmal testen","teachUse":"Hausaufgaben-Foto-Solver. Perfekt für „KI als Werkzeug vs. Verständnis“-Diskussion.","block":"KI","platform":"Mobile","url":null},
+{"id":"papaplatte","title":"Papaplatte","medium":"youtube","tier":"A","points":30,"estMinutes":15,"dose":"quick","doseLabel":"1 Clip","teachUse":"#1 Creator (JIM 2025). Wissen wer das ist — Referenz-Gold.","block":"Allgemein","platform":"YouTube/Twitch","url":"https://www.youtube.com/@Papaplatte"},
+{"id":"mrbeast","title":"MrBeast","medium":"youtube","tier":"A","points":30,"estMinutes":15,"dose":"quick","doseLabel":"1 Video","teachUse":"Thumbnail/Titel-A/B-Tests = reales Optimierungs-/Experiment-Beispiel.","block":"KI","platform":"YouTube","url":"https://www.youtube.com/@MrBeast"},
+{"id":"deutschrap","title":"Deutschrap/R&B-Newcomer (Pashanim, Jazeek, Zartmann, Aymen, RAF Camora)","medium":"musik","tier":"A","points":30,"estMinutes":15,"dose":"sample","doseLabel":"je 1 Song","teachUse":"Dominantes Genre der Kohorte, lokal. Kennen = Anschluss. (Spotify Wrapped AT/DE).","block":"Rapport","platform":"Spotify","url":"https://www.youtube.com/results?search_query=pashanim"},
+{"id":"slang-pack","title":"TikTok-Slang-Pack (rizz, 6-7, Sigma, looksmaxxing/mewing, Ohio, gyatt, „Roman Empire“)","medium":"sonstiges","tier":"A","points":30,"estMinutes":15,"dose":"quick","doseLabel":"Glossar überfliegen","teachUse":"Verstehen, was sie sagen. Senkt sofort den affektiven Filter.","block":"Rapport","platform":"Web","url":"https://www.youtube.com/results?search_query=gen+alpha+slang+erklärt"},
+{"id":"subway-surfers","title":"Subway Surfers / Temple Run","medium":"game","tier":"A","points":30,"estMinutes":10,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"Score-Verteilungen & Infinite-Runner-RNG = Cold-Open für Stichproben/Verteilungen. Auch Nostalgie + „Sludge-Content“-Backdrop.","block":"Biostat","platform":"Mobile","url":null,"subChecks":[{"id":"ss1","task":"Eine Runde bis Game Over","how":"Wischen (links/rechts/hoch/runter) zum Ausweichen, läuft endlos bis zum Crash.","points":5},{"id":"ss2","task":"Versteh den „Brainrot-Backdrop“","how":"Solche Runner laufen oft als stumme Hälfte von Split-Screen-„Sludge“-Videos auf TikTok.","points":5}]},
+{"id":"panini","title":"Panini-Stickeralbum","medium":"sonstiges","tier":"A","points":30,"estMinutes":10,"dose":"konzept","doseLabel":"Prinzip verstehen","teachUse":"„Coupon-Collector-Problem“ — Lehrbuch-Beispiel Biostatistik/Wahrscheinlichkeit.","block":"Biostat","platform":"—","url":null},
+{"id":"gangnam-style","title":"Gangnam Style","medium":"musik","tier":"A","points":30,"estMinutes":5,"dose":"quick","doseLabel":"kennst du eh","teachUse":"Erstes Video über 1 Mrd. Views = sauberes Dataset für exponentielles Wachstum.","block":"Biostat","platform":"YouTube","url":"https://www.youtube.com/watch?v=9bZkp7q19f0"},
+{"id":"gta","title":"GTA V / GTA Online (+ GTA VI Hype)","medium":"game","tier":"B","points":20,"estMinutes":20,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"Meistgeschautes Spiel auf Twitch. GTA-VI-Hype riesig — Kontext. (M-rated → nur kennen, nicht im Unterricht zeigen.)","block":"Allgemein","platform":"PC/Konsole","url":null,"subChecks":[{"id":"gta1","task":"Fahr durch Los Santos","how":"Open-World — Auto „leihen“ und einfach fahren, das ist der kulturelle Kern.","points":5},{"id":"gta2","task":"Schau einen GTA-VI-Trailer","how":"YouTube — der meistgesehene Trailer aller Zeiten. Hype kennen reicht.","points":5}]},
+{"id":"ea-fc","title":"EA Sports FC 26","medium":"game","tier":"B","points":20,"estMinutes":15,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"#1 Neuverkauf DE 2025. Spieler-Ratings = saubere Statistik-Einstiegspunkte.","block":"Biostat","platform":"Konsole","url":null,"subChecks":[{"id":"fc1","task":"Schau dir Spieler-Ratings an","how":"Menü „Squad“ — jede:r hat Zahlen (Pace, Shooting, Passing…) = multivariate Statistik.","points":5},{"id":"fc2","task":"Spiel 1 Match","how":"Schnelles Freundschaftsspiel — der ewige Couch-Klassiker.","points":5}]},
+{"id":"esports","title":"Esports-Titel (Counter-Strike 2, League of Legends, Valorant)","medium":"game","tier":"B","points":20,"estMinutes":15,"dose":"konzept","doseLabel":"Namen + Vibe kennen","teachUse":"Kontext für den (eher männlichen) Esports-Teil. ~12 Mio. dt. Esports-Fans, Twitch dominiert.","block":"Allgemein","platform":"PC","url":null,"subChecks":[{"id":"es1","task":"Schau 5 Min Twitch/Highlights eines Titels","how":"Twitch öffnen oder „CS2 highlights“ googeln — Spielgefühl mitbekommen.","points":5},{"id":"es2","task":"Versteh das Turnier-Konzept","how":"Profi-Teams, Ligen, Preisgelder — Esports ist Stadion-großer Sport ohne Stadion.","points":5}]},
+{"id":"mario-kart-world","title":"Mario Kart World (Switch 2)","medium":"game","tier":"B","points":20,"estMinutes":15,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"Switch-2-Launchtitel. Item-RNG (roter Panzer etc.) = Wahrscheinlichkeit. Nostalgie-Brücke.","block":"Biostat","platform":"Switch 2","url":null,"subChecks":[{"id":"mk1","task":"Fahr 1 Rennen","how":"Items aufsammeln, Strecke fahren — Platz 1–12.","points":5},{"id":"mk2","task":"Erleb den „blauen Panzer“","how":"Trifft automatisch Platz 1 = Comeback-Mechanik = Zufall, der Fairness erzeugt.","points":5}]},
+{"id":"whatsapp-snap-insta","title":"WhatsApp / Snapchat / Instagram","medium":"app","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"Nutzungsmuster kennen","teachUse":"Login/Session = Web-Apps-Beispiel, das alle täglich nutzen. (WA #1, Snap höchste Tagesintensität.)","block":"Web","platform":"Mobile","url":null},
+{"id":"discord-twitch","title":"Discord / Twitch","medium":"app","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"wissen wie's aussieht","teachUse":"Esports/Gaming-Hubs (männlich geprägt). Server/Channels = Strukturen.","block":"Allgemein","platform":"Web","url":null},
+{"id":"pinterest","title":"Pinterest","medium":"app","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"einmal durchscrollen","teachUse":"Stark weiblich (36% vs 5%). Mood-Boards/Aesthetics — wichtig für gemischte Klasse.","block":"Rapport","platform":"Web","url":null},
+{"id":"reddit","title":"Reddit","medium":"app","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"ein Subreddit ansehen","teachUse":"Wieder im Aufwind (~9%). Strukturierte Communities, Upvote-Logik.","block":"Allgemein","platform":"Web","url":"https://reddit.com"},
+{"id":"masked-singer","title":"The Masked Singer","medium":"gameshow","tier":"B","points":20,"estMinutes":45,"dose":"episode","doseLabel":"1 Folge","teachUse":"Reveal-UI, Feedback-Sound, Sichtbarkeit = Usability-Prinzipien.","block":"GUI","platform":"ProSieben","url":null},
+{"id":"gntm","title":"Germany's Next Topmodel","medium":"reality","tier":"B","points":20,"estMinutes":45,"dose":"episode","doseLabel":"1 Folge","teachUse":"Jury-Scoring = Klassifikation (Sensitivität/Spezifität-Analogie).","block":"Biostat","platform":"ProSieben","url":null},
+{"id":"panem","title":"Die Tribute von Panem (Sunrise on the Reaping)","medium":"buch","tier":"B","points":20,"estMinutes":120,"dose":"film","doseLabel":"Film reicht statt Buch","teachUse":"„Reaping“-Lotterie = lebendiges Stichproben-/Wahrscheinlichkeits-Szenario.","block":"Biostat","platform":"Kino/Buch","url":null},
+{"id":"booktok","title":"BookTok / Romantasy (Sarah J. Maas, Rebecca Yarros, Colleen Hoover)","medium":"buch","tier":"B","points":20,"estMinutes":15,"dose":"konzept","doseLabel":"Phänomen kennen","teachUse":"Große (weiblich geprägte) Subkultur — wissen, dass es existiert. Rapport.","block":"Rapport","platform":"TikTok","url":null},
+{"id":"caroline-wahl","title":"Caroline Wahl („22 Bahnen“, „Windstärke 17“)","medium":"buch","tier":"B","points":20,"estMinutes":15,"dose":"konzept","doseLabel":"kennen","teachUse":"Deutscher Literatur-Crossover, der auch junge Leser:innen erreicht.","block":"Rapport","platform":"Buch","url":null},
+{"id":"anime-pack","title":"Anime-Aktuell (Demon Slayer, Jujutsu Kaisen, Solo Leveling)","medium":"anime","tier":"B","points":20,"estMinutes":25,"dose":"sample","doseLabel":"je 1 Folge/Trailer","teachUse":"Starke Kohorten-Überschneidung (Crunchyroll). Solo Leveling = Level-up-Mechanik. (FSK 16 → nur kennen.)","block":"Allgemein","platform":"Crunchyroll","url":null},
+{"id":"hobbylos","title":"Hobbylos (Podcast, Julien Bam & Rezo)","medium":"podcast","tier":"B","points":20,"estMinutes":30,"dose":"sample","doseLabel":"reinhören","teachUse":"#1 Teen-Podcast (11% JIM 2025). Referenz.","block":"Allgemein","platform":"Spotify","url":null},
+{"id":"podcast-pack","title":"Podcast-Pack (Gemischtes Hack, Mordlust, Kaulitz Hills, Dick & Doof, Die Nervigen)","medium":"podcast","tier":"B","points":20,"estMinutes":30,"dose":"sample","doseLabel":"je kurz reinhören","teachUse":"Podcast-Landschaft der Kohorte (~25% Reichweite). Mordlust = True-Crime-Format-Idee.","block":"Allgemein","platform":"Spotify","url":null,"packItems":["Gemischtes Hack","Mordlust","Kaulitz Hills","Dick & Doof","Die Nervigen"]},
+{"id":"pamela-reif","title":"Pamela Reif","medium":"influencer","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"Profil kennen","teachUse":"Follower-Wachstumskurven = reales Dataset für exp./log. Wachstum. Meistgefolgte dt. YouTuberin.","block":"Biostat","platform":"YouTube/Insta","url":null},
+{"id":"sascha-huber","title":"Sascha Huber (AT-Fitness-Creator)","medium":"influencer","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"kennen","teachUse":"Österreichischer Local-Hook — direkter Bezug zur Klasse.","block":"Rapport","platform":"YouTube","url":null},
+{"id":"influencer-pack","title":"Influencer-Pack (MontanaBlack, Trymacs, Knossi, Younes Zarou, Shirin David, Julia Beautx, Rezo)","medium":"influencer","tier":"B","points":20,"estMinutes":15,"dose":"konzept","doseLabel":"Namen zuordnen können","teachUse":"Die großen DACH-Namen kennen. Younes Zarou = größter dt. TikToker (~56 Mio).","block":"Allgemein","platform":"diverse","url":null,"packItems":["MontanaBlack","Trymacs","Knossi","Younes Zarou","Shirin David","Julia Beautx","Rezo"]},
+{"id":"youtuber-pack","title":"YouTuber-Pack (Laser Luca, Paluten, BastiGHG, Julien Bam, HandOfBlood, Gronkh)","medium":"youtube","tier":"B","points":20,"estMinutes":15,"dose":"konzept","doseLabel":"Namen kennen","teachUse":"Top-Creator-Riege (JIM 2025). Paluten/Gronkh = Minecraft-Brücke Kindheit→jetzt.","block":"Allgemein","platform":"YouTube","url":null,"packItems":["Laser Luca","Paluten","BastiGHG","Julien Bam","HandOfBlood","Gronkh"]},
+{"id":"wwm","title":"Wer wird Millionär?","medium":"gameshow","tier":"B","points":20,"estMinutes":45,"dose":"episode","doseLabel":"1 Folge (Klassiker)","teachUse":"Joker-Logik (50:50, Publikum) = bedingte Wahrscheinlichkeit / Bayes.","block":"Biostat","platform":"RTL","url":null},
+{"id":"gameshow-pack","title":"Gameshow-Pack (TV total, Schlag den Star, Ein sehr gutes Quiz, LOL, Let's Dance, The Voice)","medium":"gameshow","tier":"B","points":20,"estMinutes":30,"dose":"sample","doseLabel":"Formate kennen","teachUse":"Die aktuelle Gameshow-Landschaft. „Ein sehr gutes Quiz“ schlug WWM beim TV-Preis — Format-Inspiration.","block":"GUI","platform":"ProSieben/RTL","url":null,"packItems":["TV total","Schlag den Star","Ein sehr gutes Quiz","LOL: Last One Laughing","Let's Dance","The Voice"]},
+{"id":"film-aktuell-pack","title":"Kino-Aktuell-Pack (Das Kanu des Manitu, Lilo & Stitch, Avatar: Fire and Ash, Wicked, Superman, Smurfs, Wunderschöner)","medium":"film","tier":"B","points":20,"estMinutes":20,"dose":"konzept","doseLabel":"Titel/Trailer kennen","teachUse":"Aktuelle Kino-Charts DE 2025 — Smalltalk-Anschluss. (Kanu des Manitu = #1 dt. Film.)","block":"Rapport","platform":"Kino","url":null,"packItems":["Das Kanu des Manitu","Lilo & Stitch","Avatar: Fire and Ash","Wicked / Wicked: For Good","Superman (2025)","Die Schlümpfe","Wunderschöner","Mission: Impossible – The Final Reckoning"]},
+{"id":"serie-aktuell-pack","title":"Serien-Aktuell-Pack (The Witcher S4, Alien: Earth, You S5)","medium":"serie","tier":"B","points":20,"estMinutes":25,"dose":"konzept","doseLabel":"wissen dass es läuft","teachUse":"Weitere große Streaming-Titel H2 2025 — Smalltalk.","block":"Allgemein","platform":"Netflix","url":null,"packItems":["The Witcher S4","Alien: Earth","You S5"]},
+{"id":"music-global-pack","title":"Global-Charts-Pack (Bad Bunny, Taylor Swift, The Weeknd, Billie Eilish, „Die With A Smile“, „APT.“)","medium":"musik","tier":"B","points":20,"estMinutes":15,"dose":"sample","doseLabel":"die Top-Songs kennen","teachUse":"Spotify-Charts 2025 — gender-neutraler Smalltalk-Anker. Bad Bunny = #1 global.","block":"Rapport","platform":"Spotify","url":null,"packItems":["Bad Bunny","Taylor Swift","The Weeknd","Billie Eilish","Lady Gaga & Bruno Mars – Die With A Smile","ROSÉ & Bruno Mars – APT.","Linkin Park (Revival)"]},
+{"id":"wikipedia","title":"Wikipedia","medium":"app","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"Edit-History ansehen","teachUse":"Hausaufgaben-Backbone. Edit-History + Zitations-Graph = greifbares Beispiel für verlinkte/strukturierte Daten.","block":"DB","platform":"Web","url":"https://wikipedia.org"},
+{"id":"baller-league","title":"Baller League","medium":"sonstiges","tier":"B","points":20,"estMinutes":15,"dose":"sample","doseLabel":"Konzept kennen","teachUse":"Kleinfeld-Fußball mit Streamer-Coaches — 2025-Crossover Sport×Creator.","block":"Allgemein","platform":"YouTube/Twitch","url":null},
+{"id":"fashion-pack","title":"Aesthetics/Fashion-Pack (Y2K-Revival, Baggy Jeans, Thrifting, „clean girl“, Gorpcore, Fußballtrikots)","medium":"sonstiges","tier":"B","points":20,"estMinutes":10,"dose":"konzept","doseLabel":"Begriffe kennen","teachUse":"Mode-Codes der Kohorte — Rapport + Slang-Verständnis.","block":"Rapport","platform":"—","url":null},
+{"id":"meme-aktuell-pack","title":"Meme-Aktuell-Pack (Skibidi Toilet, „6-7“, Jet2-Voiceover, „Sigma Boy“, Ghibli-AI-Filter, POV-Skits, AI-„Sludge“)","medium":"meme","tier":"B","points":20,"estMinutes":10,"dose":"quick","doseLabel":"je 1 Beispiel","teachUse":"Die übrigen aktuellen Meme-Formate neben Brainrot. Ghibli-Filter = wieder generative-KI-Brücke.","block":"KI","platform":"YouTube","url":"https://www.youtube.com/results?search_query=skibidi+toilet","packItems":["Skibidi Toilet","6-7 numeric brainrot","Jet2 holiday voiceover","Sigma / Sigma Boy","Ghibli-Style AI-Filter","POV-/relatable Skits","AI-„Sludge“-Content"]},
+{"id":"console-aktuell-pack","title":"Konsolen-Aktuell-Pack (Split Fiction, Kingdom Come II, CoD Black Ops 7, Monster Hunter Wilds, Borderlands 4, Metroid Prime 4, Battlefield 6, Anno 117)","medium":"game","tier":"C","points":10,"estMinutes":10,"dose":"konzept","doseLabel":"Titel kennen","teachUse":"Aktuelle Konsolen-/PC-Charts 2025 — Gaming-Smalltalk. Anno 117 = made in AT/DE-Nähe (Ubisoft Mainz).","block":"Allgemein","platform":"Konsole/PC","url":null,"packItems":["Split Fiction","Kingdom Come: Deliverance II","Call of Duty: Black Ops 7","Monster Hunter Wilds","Borderlands 4","Metroid Prime 4: Beyond","Battlefield 6","Anno 117: Pax Romana"]},
+{"id":"casual-game-pack","title":"Casual-Handyspiel-Pack (Block Blast!, Brawl Stars, Clash Royale, Hay Day, Candy Crush)","medium":"game","tier":"C","points":10,"estMinutes":10,"dose":"play","doseLabel":"je 1 Runde","teachUse":"Aktuelle Casual-Charts (Block Blast = Breakout-Hit). Match-3/Tower = simple Spiel-Loops.","block":"Allgemein","platform":"Mobile","url":null,"packItems":["Block Blast!","Brawl Stars","Clash Royale","Hay Day","Candy Crush Saga"]},
+{"id":"reality-trash-pack","title":"Reality-Trash-Pack (Germany Shore, Love Island, Love Is Blind: Germany, Temptation Island, Sommerhaus der Stars, Kampf der Realitystars, Dschungelcamp, Forsthaus Rampensau)","medium":"reality","tier":"C","points":10,"estMinutes":10,"dose":"konzept","doseLabel":"Formate kennen","teachUse":"Trash-TV-Landschaft (jung). Meist reife Themen — vorab vetten, eher Rapport als Unterricht.","block":"Rapport","platform":"RTL+/Joyn/Netflix","url":null,"packItems":["Germany Shore","Love Island","Love Is Blind: Germany","Temptation Island","Das Sommerhaus der Stars","Kampf der Realitystars","Dschungelcamp","Forsthaus Rampensau"]},
+{"id":"nost-mobile","title":"📦 Handyspiel-Nostalgie (Angry Birds, Fruit Ninja, Doodle Jump, Clash of Clans, Cut the Rope, Talking Tom, Pou, Crossy Road, Geometry Dash)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Cold-Open. Flappy Bird hat eigene Karte (Difficulty-Kurve).","block":"Rapport","platform":"—","url":null,"packItems":["Angry Birds","Fruit Ninja","Doodle Jump","Clash of Clans","Cut the Rope","Talking Tom","Pou","Crossy Road","Geometry Dash"]},
+{"id":"flappy-bird","title":"Flappy Bird","medium":"game","tier":"C","points":10,"estMinutes":5,"dose":"play","doseLabel":"siehe Sub-Checks","teachUse":"Brutale Schwierigkeitskurve = Cold-Open für Verteilungen/Frust-Daten.","block":"Biostat","platform":"Mobile","url":null,"subChecks":[{"id":"fb1","task":"Schaff 5 Punkte (viel Glück)","how":"Tap-to-flap zwischen die Röhren — berüchtigt schwer, genau das ist der Witz.","points":5}]},
+{"id":"nost-pc","title":"📦 PC-/Browser-Nostalgie (Club Penguin, Habbo Hotel, RuneScape, Plants vs. Zombies, SpielAffe, Wizard101)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Rapport (Flash-Game-Ära).","block":"Rapport","platform":"—","url":null,"packItems":["Club Penguin","Habbo Hotel","RuneScape","Plants vs. Zombies","SpielAffe","Wizard101"]},
+{"id":"nost-console","title":"📦 Konsolen-Nostalgie (Wii Sports, Nintendo DS/Nintendogs, Mario Kart DS, Xbox 360, Just Dance, Skylanders)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Rapport. Wii Sports/FIFA-Ratings = Sensor-/Statistik-Einstieg.","block":"Rapport","platform":"—","url":null,"packItems":["Wii Sports","Nintendo DS / Nintendogs","Mario Kart DS","Xbox 360","Just Dance","Skylanders"]},
+{"id":"nost-serie","title":"📦 Serien-Kindheit (Hannah Montana, iCarly, Victorious, Drake & Josh, Wizards of Waverly Place, Hotel Zack & Cody, Schloss Einstein, Die Pfefferkörner, Phineas und Ferb, Cosmo & Wanda, SpongeBob)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Cold-Open. (Avatar, Gravity Falls, H2O haben eigene Karten — teachUse.)","block":"Rapport","platform":"—","url":null,"packItems":["Hannah Montana","iCarly","Victorious","Drake & Josh","Wizards of Waverly Place","Hotel Zack & Cody","Schloss Einstein","Die Pfefferkörner","Phineas und Ferb","Cosmo & Wanda","SpongeBob"]},
+{"id":"h2o","title":"H2O – Plötzlich Meerjungfrau","medium":"serie","tier":"C","points":10,"estMinutes":10,"dose":"konzept","doseLabel":"kennen","teachUse":"KiKA-Staple ihrer Kindheit — starker Nostalgie-Trigger (v.a. weiblich).","block":"Rapport","platform":"—","url":null},
+{"id":"nost-film","title":"📦 Film-Kindheit (Ice Age, Despicable Me/Minions, Frozen, Toy Story 3, HTTYD, Harry-Potter-Finale, frühe Avengers, Bibi & Tina, Pokémon-Filme)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Cold-Open.","block":"Rapport","platform":"—","url":null,"packItems":["Ice Age","Despicable Me / Minions","Frozen","Toy Story 3","How to Train Your Dragon","Harry Potter (Finale 2011)","frühe Marvel/Avengers","Bibi & Tina","Pokémon-Filme"]},
+{"id":"nost-music","title":"📦 Musik-Nostalgie (Bieber „Baby“, One Direction, Katy Perry, LMFAO, Avicii, Cro, Mark Forster, „Atemlos“, Disney-Soundtracks)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Cold-Open. (Gangnam Style hat eigene Karte — teachUse.)","block":"Rapport","platform":"—","url":null,"packItems":["Justin Bieber – Baby","One Direction","Katy Perry","LMFAO","Avicii","Cro","Mark Forster","Helene Fischer – Atemlos","Disney-Soundtracks (Hannah Montana, Violetta)"]},
+{"id":"nost-meme","title":"📦 Meme-Nostalgie (Trollface/Rage Comics, Harlem Shake, Doge, Nyan Cat, Grumpy Cat, Rickrolling, „Over 9000“, Planking, Ice Bucket Challenge, „vong“)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Cold-Open + zeigt Meme-Evolution (→ heute Brainrot).","block":"Rapport","platform":"—","url":null,"packItems":["Trollface / Rage Comics","Harlem Shake","Doge","Nyan Cat","Grumpy Cat","Rickrolling","Over 9000","Planking","Ice Bucket Challenge","vong-Sprache"]},
+{"id":"nost-buch","title":"📦 Buch-Kindheit (Harry Potter, Gregs Tagebuch, Die drei ???, Percy Jackson, Bibi & Tina Hörspiele, Warrior Cats, Das magische Baumhaus, Conni)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Rapport.","block":"Rapport","platform":"—","url":null,"packItems":["Harry Potter","Gregs Tagebuch","Die drei ???","Percy Jackson","Bibi & Tina (Hörspiele)","Warrior Cats","Das magische Baumhaus","Conni"]},
+{"id":"nost-toys","title":"📦 Spielzeug-Nostalgie (Beyblade, Pokémon-Karten, Monster High, Littlest Pet Shop, Filly, Schleich, Fidget Spinner, Loom Bands, Nerf)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Cold-Open (Schulhof-Trends).","block":"Rapport","platform":"—","url":null,"packItems":["Beyblade","Pokémon-Sammelkarten","Monster High","Littlest Pet Shop","Filly","Schleich-Figuren","Fidget Spinner (2017)","Loom Bands (2014)","Nerf"]},
+{"id":"nost-youtuber","title":"📦 YouTuber-Nostalgie (Gronkh, Y-Titty, DieLochis, BibisBeautyPalace, ConCrafter, LeFloid, Dner, Freshtorge, Sami Slimani)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Namen kennen","teachUse":"Kindheits-Rapport (frühe dt. YouTube-Ära).","block":"Rapport","platform":"—","url":null,"packItems":["Gronkh","Y-Titty","DieLochis","BibisBeautyPalace","ConCrafter/Luca","LeFloid","Dner","Freshtorge","Sami Slimani"]},
+{"id":"magazine-pack","title":"📦 Magazine (BRAVO, BRAVO Sport, Bravo Girl!, GEOlino, Welt der Wunder, National Geographic, PC Games/GameStar, kicker, Lustiges Taschenbuch, 11 Freunde)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"getrost skippen","teachUse":"Print ist quasi tot (~10%). Nur Nostalgie (BRAVO) oder Panini-Beispiel.","block":"Rapport","platform":"Print","url":null,"packItems":["BRAVO","BRAVO Sport","Bravo Girl!","GEOlino / Geo","Welt der Wunder","National Geographic","PC Games / GameStar","kicker","Lustiges Taschenbuch","11 Freunde"]},
+{"id":"website-nost","title":"📦 Website-Nostalgie (SpielAffe, Club Penguin, MovieStarPlanet, Habbo, Stardoll, frühes Wikipedia, Google Images)","medium":"pack","tier":"C","points":10,"estMinutes":5,"dose":"konzept","doseLabel":"Liste überfliegen","teachUse":"Kindheits-Rapport (Web-Frühzeit).","block":"Rapport","platform":"—","url":null,"packItems":["SpielAffe","Club Penguin","MovieStarPlanet","Habbo","Stardoll","frühes Wikipedia","Google Images"]},
+{"id":"galileo","title":"Galileo / Wissens-Formate (1,2 oder 3, Wissen macht Ah!)","medium":"gameshow","tier":"C","points":10,"estMinutes":15,"dose":"konzept","doseLabel":"Format kennen","teachUse":"Die Wissens-Explainer, mit denen sie aufwuchsen — Format-Inspiration für Erklärvideos.","block":"Allgemein","platform":"ProSieben","url":null}
+];
+
+/* ============ KONFIG ============ */
+const MEDIA={
+  serie:{e:"📺",n:"Serie",h:265}, film:{e:"🎬",n:"Film",h:330}, game:{e:"🎮",n:"Game",h:140},
+  app:{e:"📱",n:"App",h:205}, musik:{e:"🎵",n:"Musik",h:300}, meme:{e:"🤡",n:"Meme",h:25},
+  reality:{e:"🌹",n:"Reality",h:345}, gameshow:{e:"🎙️",n:"Gameshow",h:45}, youtube:{e:"▶️",n:"YouTube",h:0},
+  influencer:{e:"🤳",n:"Influencer",h:315}, buch:{e:"📚",n:"Buch",h:30}, anime:{e:"🍥",n:"Anime",h:185},
+  podcast:{e:"🎧",n:"Podcast",h:255}, sonstiges:{e:"✨",n:"Sonstiges",h:60}, rapport:{e:"🧸",n:"Rapport",h:20},
+  pack:{e:"📦",n:"Pack",h:230}
+};
+const TIER_COLOR={S:"var(--s)",A:"var(--a)",B:"var(--b)",C:"var(--c)"};
+const DOSE_CHIP={quick:"⚡ quick",episode:"📺 1 Folge",film:"🎬 Film",season:"📚 Staffel",konzept:"💡 Konzept",sample:"👀 Sample",play:"🎮 Play"};
+const LEVELS=[
+  {min:0,t:"NPC Teacher"},{min:150,t:"Lowkey Aware"},{min:400,t:"Got Rizz"},
+  {min:800,t:"Sigma Educator 🗿"},{min:1400,t:"Final Boss of Aura 🔥"}
+];
+const FULL_GAME_BONUS=15;
+const GAMES=CATALOG.filter(i=>i.subChecks&&i.subChecks.length);
+const PACK_IDS=CATALOG.filter(i=>i.medium==="pack").map(i=>i.id);
+const SPEED_IDS=CATALOG.filter(i=>i.estMinutes<=15).map(i=>i.id);
+const QUESTS=[
+  {id:"showrunner",emoji:"🎬",name:"Showrunner",desc:"Die 5 Franchise-Skins für den Unterricht: Stranger Things, Wednesday, Cassandra, Squid Game, Are You The One?",bonus:100,badge:"Showrunner",items:["stranger-things","wednesday","cassandra","squid-game","are-you-the-one"]},
+  {id:"brainrot-cert",emoji:"🤡",name:"Brainrot Certified",desc:"Italian Brainrot + Skibidi + „6-7“ + Sigma — der komplette Meme-Code.",bonus:50,badge:"Certified Brainrot Scholar",items:["brainrot","meme-aktuell-pack","slang-pack"]},
+  {id:"statistician",emoji:"📊",name:"Statistician's Playlist",desc:"Spotify Wrapped + Panini + Gangnam Style + F1 — Daten überall.",bonus:50,badge:"Aura Farmer of Numbers",items:["spotify-wrapped","panini","gangnam-style","f1-dts"]},
+  {id:"ai-arc",emoji:"🤖",name:"AI Arc",desc:"ChatGPT + Cassandra + Brainrot + KPop Demon Hunters — der KI-Kanon.",bonus:50,badge:"Prompt Wizard",items:["chatgpt","cassandra","brainrot","kpop-demon-hunters"]},
+  {id:"touch-grass",emoji:"🎮",name:"Touch Grass... Later",desc:"Alle Games „fully experienced“ (alle Sub-Checks erledigt).",bonus:75,badge:"Certified Gamer",type:"games"},
+  {id:"nostalgia",emoji:"🧸",name:"Nostalgia Arc",desc:"Alle Nostalgie-Packs durchgesehen.",bonus:50,badge:"Real One",items:PACK_IDS},
+  {id:"speedrun",emoji:"⚡",name:"Speedrun",desc:"Alle Items mit ≤15 Minuten abgehakt.",bonus:75,badge:"No Time To Grass",items:SPEED_IDS}
+];
+
+/* ============ TEXTE (Brainrot / Lehrerzimmer) ============ */
+const TXT={
+  slang:{
+    subtitle:"der Pop-Culture-Grind",
+    modeBtn:"🧠 Brainrot Mode",
+    checkedMsgs:["Ate ✅ +{p} Aura, no cap","W. Du cookst. +{p} Aura","Lowkey essential. +{p} Aura","Sheesh. +{p} Aura gefarmt."],
+    packMsg:"Pack geclapped 📦 +{p} Aura",
+    uncheckMsg:"Unchecked. −{p} Aura, L move 😔",
+    subMsg:"+5 Aura. Step closer to certified.",
+    subUnMsg:"−5 Aura. It's giving Rückschritt.",
+    proMsg:"Pro-Gamer-Stempel 🎮 du hast das ge-mastert. +"+FULL_GAME_BONUS+" Bonus!",
+    questMsg:"Quest cleared 🔥 du hast hart gefarmt. +{b} Aura",
+    levelHead:"GLOW UP! 🗿",
+    levelMsg:"Du bist jetzt {t}.",
+    streak:"Daily Grind: {n} 🔥",
+    streakZero:"Noch kein Daily Grind 💤",
+    empty:"0 Aura?? Bro… geh nicht Gras anfassen, geh Wednesday schauen.",
+    noResults:"Nix gefunden. Dein Filter ist mid. 🫠",
+    tier:{S:"ESSENTIAL (no cap)",A:"big W",B:"solid",C:"mid / for the lore"},
+    sort:{time:"⚡ Speedrun (Zeit)",aura:"💎 Grind (Aura)",tier:"🏅 Tier",vibe:"🎲 Vibe (random)"},
+    quick:{essential:"⭐ Nur ESSENTIAL",fast:"⏱ ≤15 Min",open:"⬜ Noch offen",games:"🎮 Nur Games",random:"🎲 Quick Win"},
+    resetConfirm:"Sicher?? Alle Aura weg. No backsies, fr fr.",
+    resetBtn:"💀 Alles löschen (Aura weg)",
+    nextLevel:"{n} Aura bis „{t}“",
+    maxLevel:"MAX LEVEL. Du bist der Final Boss. 🔥",
+    pctDone:"{p}% geclaimt",
+    proStamp:"PRO-GAMER",
+    subsLabel:"Sub-Checks",
+    experienced:"erlebt",
+    questsHead:"Quests — Bundles farmen",
+    profilHead:"Profil — dein Grind",
+    badgesHead:"🏅 Badge-Regal",
+    dataHead:"💾 Fortschritt sichern",
+    exportBtn:"📤 Export (Copy)",
+    importToggle:"📥 Import",
+    importBtn:"Einlesen",
+    exportOk:"Fortschritt kopiert 📋 safe.",
+    importOk:"Import ate ✅ Fortschritt geladen.",
+    importErr:"Das war kein valides JSON, bro 💀",
+    statAura:"Aura",statItems:"Items erledigt",statPct:"Fortschritt",statStreak:"Streak",
+    openLabel:"Open ↗",searchLabel:"🔎 Googeln",
+    searchPh:"Suchen… (z.B. rizz, Minecraft)",
+    teachHead:"Wofür im Unterricht",doseHead:"Dosis",packHead:"Im Pack enthalten",
+    blockHead:"MGIN-Block",platformHead:"Plattform",
+    randomEmpty:"Alles ≤15 Min ist schon gefarmt. W."
+  },
+  normal:{
+    subtitle:"die Pop-Culture-Checkliste",
+    modeBtn:"👔 Lehrerzimmer Mode",
+    checkedMsgs:["Erledigt ✓ +{p} Punkte","Sehr gut! +{p} Punkte","Abgehakt ✓ +{p} Punkte"],
+    packMsg:"Pack erledigt 📦 +{p} Punkte",
+    uncheckMsg:"Rückgängig. −{p} Punkte",
+    subMsg:"+5 Punkte.",
+    subUnMsg:"−5 Punkte.",
+    proMsg:"Spiel vollständig erkundet 🎮 +"+FULL_GAME_BONUS+" Bonuspunkte!",
+    questMsg:"Quest abgeschlossen 🏆 +{b} Punkte",
+    levelHead:"Level-Up! 🎉",
+    levelMsg:"Neuer Titel: {t}",
+    streak:"Streak: {n} Tage 🔥",
+    streakZero:"Noch keine Streak",
+    empty:"Noch nichts abgehakt — fang z. B. mit Wednesday an.",
+    noResults:"Keine Treffer für diesen Filter.",
+    tier:{S:"Essenziell",A:"Stark empfohlen",B:"Nice to have",C:"Optional"},
+    sort:{time:"Zeit (aufsteigend)",aura:"Punkte (absteigend)",tier:"Wichtigkeit",vibe:"Zufällig"},
+    quick:{essential:"⭐ Nur Essenziell",fast:"⏱ ≤15 Min",open:"⬜ Noch offen",games:"🎮 Nur Games",random:"🎲 Vorschlag"},
+    resetConfirm:"Wirklich den gesamten Fortschritt löschen?",
+    resetBtn:"🗑️ Fortschritt zurücksetzen",
+    nextLevel:"{n} Punkte bis „{t}“",
+    maxLevel:"Höchstes Level erreicht!",
+    pctDone:"{p}% erledigt",
+    proStamp:"KOMPLETT",
+    subsLabel:"Aufgaben",
+    experienced:"erledigt",
+    questsHead:"Quests — Themen-Bundles",
+    profilHead:"Profil — Überblick",
+    badgesHead:"🏅 Auszeichnungen",
+    dataHead:"💾 Fortschritt sichern",
+    exportBtn:"📤 Export (Kopieren)",
+    importToggle:"📥 Import",
+    importBtn:"Einlesen",
+    exportOk:"Fortschritt in Zwischenablage kopiert.",
+    importOk:"Fortschritt erfolgreich geladen.",
+    importErr:"Ungültiges JSON-Format.",
+    statAura:"Punkte",statItems:"Items erledigt",statPct:"Fortschritt",statStreak:"Streak",
+    openLabel:"Öffnen ↗",searchLabel:"🔎 Suchen",
+    searchPh:"Suchen…",
+    teachHead:"Wofür im Unterricht",doseHead:"Dosis",packHead:"Im Pack enthalten",
+    blockHead:"MGIN-Block",platformHead:"Plattform",
+    randomEmpty:"Alle kurzen Items sind bereits erledigt."
+  }
+};
+
+/* ============ STATE ============ */
+const LS_KEY="aura-farm-state-v1";
+let state={checked:{},subs:{},slang:true,streak:0,lastDay:null,prevLevel:0};
+function loadState(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(raw){const s=JSON.parse(raw);if(s&&typeof s==="object")state=Object.assign(state,s);}
+  }catch(e){}
+}
+function saveState(){
+  try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){}
+}
+function T(){return state.slang?TXT.slang:TXT.normal;}
+
+/* ============ DERIVED ============ */
+function gameFullyDone(item){
+  return item.subChecks&&item.subChecks.length>0&&item.subChecks.every(s=>state.subs[s.id]);
+}
+function questDone(q){
+  if(q.type==="games")return GAMES.every(gameFullyDone);
+  return q.items.every(id=>state.checked[id]);
+}
+function questProgress(q){
+  if(q.type==="games")return[GAMES.filter(gameFullyDone).length,GAMES.length];
+  return[q.items.filter(id=>state.checked[id]).length,q.items.length];
+}
+function computeAura(){
+  let a=0;
+  for(const it of CATALOG){
+    if(state.checked[it.id])a+=it.points;
+    if(it.subChecks){
+      for(const s of it.subChecks)if(state.subs[s.id])a+=s.points;
+      if(gameFullyDone(it))a+=FULL_GAME_BONUS;
+    }
+  }
+  for(const q of QUESTS)if(questDone(q))a+=q.bonus;
+  return a;
+}
+function levelFor(aura){
+  let lv=0;
+  for(let i=0;i<LEVELS.length;i++)if(aura>=LEVELS[i].min)lv=i;
+  return lv;
+}
+function doneCount(){return CATALOG.filter(i=>state.checked[i.id]).length;}
+function earnedBadges(){
+  const out=[];
+  for(const q of QUESTS)out.push({id:"q-"+q.id,label:q.emoji+" "+q.badge,on:questDone(q)});
+  for(const g of GAMES)out.push({id:"g-"+g.id,label:"🎮 Pro: "+shortTitle(g.title),on:gameFullyDone(g)});
+  const mediums=[...new Set(CATALOG.map(i=>i.medium))];
+  for(const m of mediums){
+    const items=CATALOG.filter(i=>i.medium===m);
+    out.push({id:"m-"+m,label:MEDIA[m].e+" "+MEDIA[m].n+" komplett",on:items.every(i=>state.checked[i.id])});
+  }
+  return out;
+}
+function shortTitle(t){return t.split("(")[0].trim();}
+
+/* ============ HELPERS ============ */
+const $=s=>document.querySelector(s);
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function fmt(tpl,map){let s=tpl;for(const k in map)s=s.replace("{"+k+"}",map[k]);return s;}
+function toast(msg){
+  const el=document.createElement("div");
+  el.className="toast";el.textContent=msg;
+  $("#toasts").appendChild(el);
+  setTimeout(()=>el.remove(),2900);
+}
+function sparkle(x,y){
+  const glyphs=["✨","⭐","💫","🌟","🌱"];
+  for(let i=0;i<10;i++){
+    const s=document.createElement("span");
+    s.className="spark";s.textContent=glyphs[Math.floor(Math.random()*glyphs.length)];
+    s.style.left=(x-8)+"px";s.style.top=(y-8)+"px";
+    s.style.setProperty("--dx",(Math.random()*140-70)+"px");
+    s.style.setProperty("--dy",(-40-Math.random()*100)+"px");
+    s.style.setProperty("--rot",(Math.random()*240-120)+"deg");
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),850);
+  }
+}
+function bigSparkle(){
+  for(let i=0;i<3;i++)setTimeout(()=>sparkle(innerWidth*Math.random(),innerHeight*0.4*Math.random()+80),i*120);
+}
+function showLevelUp(title){
+  const el=$("#levelup");
+  el.innerHTML='<div class="big">🗿</div><h2>'+esc(T().levelHead)+'</h2><p>'+esc(fmt(T().levelMsg,{t:title}))+'</p>';
+  el.hidden=false;
+  bigSparkle();
+  const hide=()=>{el.hidden=true;el.onclick=null;};
+  el.onclick=hide;
+  setTimeout(hide,2800);
+}
+function animateAura(from,to){
+  const el=$("#auraNum");
+  const dur=450,t0=performance.now();
+  function step(t){
+    const k=Math.min(1,(t-t0)/dur);
+    el.textContent=Math.round(from+(to-from)*(1-Math.pow(1-k,3)));
+    if(k<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ============ STREAK ============ */
+function bumpStreak(){
+  const today=new Date().toISOString().slice(0,10);
+  if(state.lastDay===today)return;
+  const y=new Date(Date.now()-864e5).toISOString().slice(0,10);
+  state.streak=(state.lastDay===y)?state.streak+1:1;
+  state.lastDay=today;
+}
+
+/* ============ ACTIONS ============ */
+let lastAura=0;
+function afterChange(fxPos){
+  const beforeQuests=null; // quests evaluated below via diff sets
+  saveState();
+  const aura=computeAura();
+  const lv=levelFor(aura);
+  if(lv>state.prevLevel){
+    state.prevLevel=lv;saveState();
+    showLevelUp(LEVELS[lv].t);
+  }else if(lv<state.prevLevel){
+    state.prevLevel=lv;saveState();
+  }
+  renderStats();renderActiveView();
+  animateAura(lastAura,aura);
+  lastAura=aura;
+}
+function questSnapshot(){return QUESTS.filter(questDone).map(q=>q.id);}
+function toggleItem(id,ev){
+  const item=CATALOG.find(i=>i.id===id);
+  if(!item)return;
+  const was=!!state.checked[id];
+  const qBefore=questSnapshot();
+  if(was){delete state.checked[id];}
+  else{state.checked[id]=true;bumpStreak();}
+  const qAfter=questSnapshot();
+  if(!was){
+    const msgs=T().checkedMsgs;
+    const isPack=item.medium==="pack"||(item.packItems&&item.packItems.length);
+    toast(fmt(isPack?T().packMsg:msgs[Math.floor(Math.random()*msgs.length)],{p:item.points}));
+    if(ev)sparkle(ev.clientX||innerWidth/2,ev.clientY||innerHeight/2);
+  }else{
+    toast(fmt(T().uncheckMsg,{p:item.points}));
+  }
+  for(const qid of qAfter)if(!qBefore.includes(qid)){
+    const q=QUESTS.find(x=>x.id===qid);
+    setTimeout(()=>{toast(fmt(T().questMsg,{b:q.bonus}));bigSparkle();},450);
+  }
+  afterChange();
+}
+function toggleSub(itemId,subId,ev){
+  const item=CATALOG.find(i=>i.id===itemId);
+  if(!item)return;
+  const was=!!state.subs[subId];
+  const fullBefore=gameFullyDone(item);
+  const qBefore=questSnapshot();
+  if(was){delete state.subs[subId];}
+  else{state.subs[subId]=true;bumpStreak();}
+  if(!was){
+    toast(T().subMsg);
+    if(ev)sparkle(ev.clientX||innerWidth/2,ev.clientY||innerHeight/2);
+    if(!fullBefore&&gameFullyDone(item))setTimeout(()=>{toast(T().proMsg);bigSparkle();},350);
+  }else{
+    toast(T().subUnMsg);
+  }
+  const qAfter=questSnapshot();
+  for(const qid of qAfter)if(!qBefore.includes(qid)){
+    const q=QUESTS.find(x=>x.id===qid);
+    setTimeout(()=>{toast(fmt(T().questMsg,{b:q.bonus}));bigSparkle();},700);
+  }
+  afterChange();
+}
+
+/* ============ FILTER / SORT ============ */
+const filter={medium:null,quick:{essential:false,fast:false,open:false,games:false},search:"",sort:"tier"};
+let vibeOrder=null;
+const expanded=new Set();
+function visibleItems(){
+  let items=CATALOG.slice();
+  if(filter.medium)items=items.filter(i=>i.medium===filter.medium);
+  if(filter.quick.essential)items=items.filter(i=>i.tier==="S");
+  if(filter.quick.fast)items=items.filter(i=>i.estMinutes<=15);
+  if(filter.quick.open)items=items.filter(i=>!state.checked[i.id]);
+  if(filter.quick.games)items=items.filter(i=>i.medium==="game");
+  if(filter.search){
+    const q=filter.search.toLowerCase();
+    items=items.filter(i=>
+      i.title.toLowerCase().includes(q)||
+      i.teachUse.toLowerCase().includes(q)||
+      (i.packItems||[]).join(" ").toLowerCase().includes(q)
+    );
+  }
+  const tierRank={S:0,A:1,B:2,C:3};
+  if(filter.sort==="time")items.sort((a,b)=>a.estMinutes-b.estMinutes);
+  else if(filter.sort==="aura")items.sort((a,b)=>b.points-a.points);
+  else if(filter.sort==="tier")items.sort((a,b)=>tierRank[a.tier]-tierRank[b.tier]||a.estMinutes-b.estMinutes);
+  else if(filter.sort==="vibe"&&vibeOrder)items.sort((a,b)=>vibeOrder.indexOf(a.id)-vibeOrder.indexOf(b.id));
+  return items;
+}
+
+/* ============ RENDER ============ */
+function renderStats(){
+  const t=T();
+  const aura=computeAura();
+  const lv=levelFor(aura);
+  $("#auraNum").textContent=aura;
+  $("#levelTitle").textContent=LEVELS[lv].t;
+  $("#streakLine").textContent=state.streak>0?fmt(t.streak,{n:state.streak}):t.streakZero;
+  const next=LEVELS[lv+1];
+  if(next){
+    const span=next.min-LEVELS[lv].min;
+    $("#levelBar").style.width=Math.min(100,Math.round((aura-LEVELS[lv].min)/span*100))+"%";
+    $("#levelNext").textContent=fmt(t.nextLevel,{n:next.min-aura,t:next.t});
+  }else{
+    $("#levelBar").style.width="100%";
+    $("#levelNext").textContent=t.maxLevel;
+  }
+  $("#pctDone").textContent=fmt(t.pctDone,{p:Math.round(doneCount()/CATALOG.length*100)});
+  $("#subtitle").textContent=t.subtitle;
+  $("#modeToggle").textContent=t.modeBtn;
+}
+function cardHTML(item){
+  const t=T();
+  const m=MEDIA[item.medium];
+  const checked=!!state.checked[item.id];
+  const full=item.subChecks?gameFullyDone(item):false;
+  const isExp=expanded.has(item.id);
+  let chips='<span class="tier-pill">'+item.tier+'</span>'
+    +'<span class="mini">'+m.e+' '+m.n+'</span>'
+    +'<span class="mini">⏱ '+item.estMinutes+' min</span>'
+    +'<span class="mini">'+(DOSE_CHIP[item.dose]||item.dose)+'</span>';
+  if(item.packItems)chips+='<span class="mini">📦 '+item.packItems.length+'</span>';
+  let subsHtml="";
+  if(item.subChecks){
+    const done=item.subChecks.filter(s=>state.subs[s.id]).length;
+    subsHtml='<button class="subbar" data-exp="'+item.id+'">'
+      +'<span>🎮 '+esc(t.subsLabel)+' <span class="prog">'+done+'/'+item.subChecks.length+' '+esc(t.experienced)+'</span></span>'
+      +'<span class="arr">▾</span></button>'
+      +'<div class="subs">'
+      +item.subChecks.map(s=>{
+        const on=!!state.subs[s.id];
+        return '<div class="sub'+(on?" done":"")+'" data-sub-wrap="'+s.id+'">'
+          +'<div class="sub-row">'
+          +'<button class="subcheck'+(on?" on":"")+'" data-subcheck="'+item.id+'|'+s.id+'">✓</button>'
+          +'<span class="sub-task" data-how="'+s.id+'">'+esc(s.task)+'</span>'
+          +'<button class="sub-q" data-how="'+s.id+'">?</button>'
+          +'</div>'
+          +'<div class="sub-how">💡 '+esc(s.how)+'</div>'
+          +'</div>';
+      }).join("")
+      +'</div>';
+  }
+  return '<article class="card'+(checked?" done":"")+(isExp?" exp":"")+'" style="--h:'+m.h+';--tc:'+TIER_COLOR[item.tier]+'" data-card="'+item.id+'">'
+    +(full?'<div class="pro-stamp">'+esc(t.proStamp)+' 🎮</div>':"")
+    +'<div class="card-main">'
+    +'<div class="poster">'+m.e+'</div>'
+    +'<div class="card-body" data-open="'+item.id+'">'
+    +'<div class="chip-row">'+chips+'</div>'
+    +'<h3 class="card-title">'+esc(item.title)+'</h3>'
+    +'<p class="teach">📚 '+esc(item.teachUse)+'</p>'
+    +'</div>'
+    +'<div class="card-side">'
+    +'<button class="checkbtn'+(checked?" on":"")+'" data-check="'+item.id+'" aria-label="abhaken">✓</button>'
+    +'<span class="pts">+'+item.points+'</span>'
+    +'</div>'
+    +'</div>'
+    +subsHtml
+    +'</article>';
+}
+function renderList(){
+  const items=visibleItems();
+  const t=T();
+  if(!items.length){
+    $("#list").innerHTML='<div class="empty-msg">'+esc(doneCount()===0&&!filter.search?t.empty:t.noResults)+'</div>';
+    return;
+  }
+  $("#list").innerHTML=items.map(cardHTML).join("");
+}
+function renderQuests(){
+  const t=T();
+  $("#questsHead").textContent=t.questsHead;
+  $("#questList").innerHTML=QUESTS.map(q=>{
+    const[d,n]=questProgress(q);
+    const done=questDone(q);
+    return '<div class="quest'+(done?" done":"")+'">'
+      +'<h3>'+q.emoji+' '+esc(q.name)+(done?" ✅":"")+'</h3>'
+      +'<p>'+esc(q.desc)+'</p>'
+      +'<div class="q-meta"><span class="q-badge">🏅 '+esc(q.badge)+'</span><span>+'+q.bonus+' · '+d+'/'+n+'</span></div>'
+      +'<div class="bar"><i style="width:'+Math.round(d/n*100)+'%"></i></div>'
+      +'</div>';
+  }).join("");
+}
+function renderProfil(){
+  const t=T();
+  $("#profilHead").textContent=t.profilHead;
+  $("#badgesHead").textContent=t.badgesHead;
+  $("#dataHead").textContent=t.dataHead;
+  $("#exportBtn").textContent=t.exportBtn;
+  $("#importToggleBtn").textContent=t.importToggle;
+  $("#importBtn").textContent=t.importBtn;
+  $("#resetBtn").textContent=t.resetBtn;
+  const aura=computeAura();
+  $("#statGrid").innerHTML=
+    '<div class="stat-cell"><b>'+aura+'</b><span>'+esc(t.statAura)+'</span></div>'
+    +'<div class="stat-cell"><b>'+doneCount()+'/'+CATALOG.length+'</b><span>'+esc(t.statItems)+'</span></div>'
+    +'<div class="stat-cell"><b>'+Math.round(doneCount()/CATALOG.length*100)+'%</b><span>'+esc(t.statPct)+'</span></div>'
+    +'<div class="stat-cell"><b>'+state.streak+' 🔥</b><span>'+esc(t.statStreak)+'</span></div>';
+  const badges=earnedBadges();
+  $("#badgeShelf").innerHTML=badges.map(b=>'<span class="badge'+(b.on?"":" locked")+'">'+esc(b.label)+'</span>').join("");
+}
+function renderControls(){
+  const t=T();
+  $("#search").placeholder=t.searchPh;
+  const sortSel=$("#sortSel");
+  sortSel.innerHTML=["tier","time","aura","vibe"].map(k=>'<option value="'+k+'"'+(filter.sort===k?" selected":"")+'>'+esc(t.sort[k==="time"?"time":k==="aura"?"aura":k==="vibe"?"vibe":"tier"])+'</option>').join("");
+  const q=t.quick;
+  $("#quickChips").innerHTML=
+    ['essential','fast','open','games'].map(k=>'<button class="chip-btn'+(filter.quick[k]?" on":"")+'" data-quick="'+k+'">'+esc(q[k])+'</button>').join("")
+    +'<button class="chip-btn" data-random="1">'+esc(q.random)+'</button>';
+  $("#mediumChips").innerHTML=
+    '<button class="chip-btn'+(filter.medium===null?" on":"")+'" data-medium="">Alle</button>'
+    +Object.keys(MEDIA).filter(m=>CATALOG.some(i=>i.medium===m)).map(m=>
+      '<button class="chip-btn'+(filter.medium===m?" on":"")+'" data-medium="'+m+'">'+MEDIA[m].e+' '+MEDIA[m].n+'</button>'
+    ).join("");
+}
+let activeView="grind";
+function renderActiveView(){
+  if(activeView==="grind")renderList();
+  else if(activeView==="quests")renderQuests();
+  else renderProfil();
+}
+function renderAll(){
+  renderStats();renderControls();renderList();renderQuests();renderProfil();
+}
+
+/* ============ SHEET ============ */
+function openSheet(id){
+  const item=CATALOG.find(i=>i.id===id);
+  if(!item)return;
+  const t=T();
+  const m=MEDIA[item.medium];
+  const checked=!!state.checked[item.id];
+  let linkHtml="";
+  if(item.url){
+    linkHtml='<a class="btn primary" href="'+esc(item.url)+'" target="_blank" rel="noopener">'+esc(t.openLabel)+'</a>';
+  }else{
+    linkHtml='<span class="btn" style="cursor:default">'+esc(item.platform||"—")+'</span>'
+      +'<a class="btn" href="https://www.google.com/search?q='+encodeURIComponent(shortTitle(item.title))+'" target="_blank" rel="noopener">'+esc(t.searchLabel)+'</a>';
+  }
+  let packHtml="";
+  if(item.packItems){
+    packHtml='<div class="sheet-sec"><h4>'+esc(t.packHead)+' ('+item.packItems.length+')</h4><ul class="pack-list">'
+      +item.packItems.map(p=>'<li>'+esc(p)+'</li>').join("")+'</ul></div>';
+  }
+  let subsHtml="";
+  if(item.subChecks){
+    subsHtml='<div class="sheet-sec"><h4>🎮 '+esc(t.subsLabel)+'</h4><div class="subs" style="display:flex;padding:0">'
+      +item.subChecks.map(s=>{
+        const on=!!state.subs[s.id];
+        return '<div class="sub'+(on?" done":"")+'">'
+          +'<div class="sub-row">'
+          +'<button class="subcheck'+(on?" on":"")+'" data-subcheck="'+item.id+'|'+s.id+'">✓</button>'
+          +'<span class="sub-task">'+esc(s.task)+'</span>'
+          +'</div>'
+          +'<div class="sub-how" style="display:block">💡 '+esc(s.how)+'</div>'
+          +'</div>';
+      }).join("")+'</div></div>';
+  }
+  $("#sheet").innerHTML=
+    '<div class="sheet-grip"></div>'
+    +'<div class="sheet-head">'
+    +'<div class="poster" style="--h:'+m.h+';background:hsl('+m.h+' 55% 24% / .7);border:1px solid hsl('+m.h+' 55% 45% / .4)">'+m.e+'</div>'
+    +'<div><div class="chip-row"><span class="tier-pill" style="--tc:'+TIER_COLOR[item.tier]+';background:'+TIER_COLOR[item.tier]+'">'+item.tier+' · '+esc(t.tier[item.tier])+'</span></div>'
+    +'<h2>'+esc(item.title)+'</h2></div>'
+    +'</div>'
+    +'<div class="chip-row">'
+    +'<span class="mini">'+m.e+' '+m.n+'</span>'
+    +'<span class="mini">⏱ '+item.estMinutes+' min</span>'
+    +'<span class="mini">💎 +'+item.points+'</span>'
+    +'<span class="mini">🧩 '+esc(item.block)+'</span>'
+    +'</div>'
+    +'<div class="sheet-sec"><h4>'+esc(t.teachHead)+'</h4><p>📚 '+esc(item.teachUse)+'</p></div>'
+    +'<div class="sheet-sec"><h4>'+esc(t.doseHead)+'</h4><p>'+(DOSE_CHIP[item.dose]||"")+' — '+esc(item.doseLabel)+'</p></div>'
+    +packHtml+subsHtml
+    +'<div class="sheet-sec btn-row">'
+    +'<button class="btn '+(checked?"":"primary")+'" data-check="'+item.id+'" data-sheet-check="1">'+(checked?"✓ "+(state.slang?"abgehakt — unchecken?":"erledigt — rückgängig?"):"✅ "+(state.slang?"Claim +"+item.points+" Aura":"Abhaken (+"+item.points+")"))+'</button>'
+    +linkHtml
+    +'</div>';
+  $("#sheetWrap").hidden=false;
+  document.body.style.overflow="hidden";
+  $("#sheet").dataset.item=id;
+}
+function closeSheet(){
+  $("#sheetWrap").hidden=true;
+  document.body.style.overflow="";
+}
+
+/* ============ EVENTS ============ */
+document.addEventListener("click",(ev)=>{
+  const el=ev.target.closest("[data-check],[data-subcheck],[data-open],[data-exp],[data-how],[data-quick],[data-medium],[data-random],.tab");
+  if(!el)return;
+  if(el.dataset.check!==undefined&&el.dataset.check!==""){
+    toggleItem(el.dataset.check,ev);
+    if(el.dataset.sheetCheck)openSheet(el.dataset.check);
+    return;
+  }
+  if(el.dataset.subcheck){
+    const[itemId,subId]=el.dataset.subcheck.split("|");
+    toggleSub(itemId,subId,ev);
+    if(el.closest("#sheet"))openSheet(itemId);
+    return;
+  }
+  if(el.dataset.open){openSheet(el.dataset.open);return;}
+  if(el.dataset.exp){
+    const id=el.dataset.exp;
+    if(expanded.has(id))expanded.delete(id);else expanded.add(id);
+    renderList();return;
+  }
+  if(el.dataset.how){
+    const wrap=document.querySelector('[data-sub-wrap="'+el.dataset.how+'"]');
+    if(wrap)wrap.classList.toggle("how-open");
+    return;
+  }
+  if(el.dataset.quick){
+    filter.quick[el.dataset.quick]=!filter.quick[el.dataset.quick];
+    renderControls();renderList();return;
+  }
+  if(el.dataset.medium!==undefined){
+    filter.medium=el.dataset.medium||null;
+    renderControls();renderList();return;
+  }
+  if(el.dataset.random){
+    const cands=CATALOG.filter(i=>i.estMinutes<=15&&!state.checked[i.id]);
+    if(!cands.length){toast(T().randomEmpty);return;}
+    openSheet(cands[Math.floor(Math.random()*cands.length)].id);
+    return;
+  }
+  if(el.classList.contains("tab")){
+    activeView=el.dataset.view;
+    document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("on",b===el));
+    $("#view-grind").hidden=activeView!=="grind";
+    $("#view-quests").hidden=activeView!=="quests";
+    $("#view-profil").hidden=activeView!=="profil";
+    renderActiveView();
+    return;
+  }
+});
+$("#sheetBg").addEventListener("click",closeSheet);
+$("#search").addEventListener("input",e=>{filter.search=e.target.value.trim();renderList();});
+$("#sortSel").addEventListener("change",e=>{
+  filter.sort=e.target.value;
+  if(filter.sort==="vibe")vibeOrder=CATALOG.map(i=>i.id).sort(()=>Math.random()-0.5);
+  renderList();
+});
+$("#modeToggle").addEventListener("click",()=>{
+  state.slang=!state.slang;saveState();renderAll();
+});
+$("#exportBtn").addEventListener("click",()=>{
+  const data=JSON.stringify(state);
+  const done=()=>toast(T().exportOk);
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(data).then(done).catch(()=>{prompt("Copy:",data);done();});
+  }else{prompt("Copy:",data);done();}
+});
+$("#importToggleBtn").addEventListener("click",()=>{
+  $("#importBox").hidden=!$("#importBox").hidden;
+});
+$("#importBtn").addEventListener("click",()=>{
+  try{
+    const s=JSON.parse($("#importArea").value);
+    if(!s||typeof s!=="object"||!s.checked)throw 0;
+    state=Object.assign({checked:{},subs:{},slang:true,streak:0,lastDay:null,prevLevel:0},s);
+    saveState();
+    lastAura=computeAura();
+    renderAll();
+    toast(T().importOk);
+    $("#importBox").hidden=true;
+  }catch(e){toast(T().importErr);}
+});
+$("#resetBtn").addEventListener("click",()=>{
+  if(!confirm(T().resetConfirm))return;
+  try{localStorage.removeItem(LS_KEY);}catch(e){}
+  state={checked:{},subs:{},slang:state.slang,streak:0,lastDay:null,prevLevel:0};
+  saveState();lastAura=0;
+  expanded.clear();
+  renderAll();
+});
+
+/* ============ INIT ============ */
+loadState();
+state.prevLevel=levelFor(computeAura());
+saveState();
+lastAura=computeAura();
+renderAll();
+if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
+  try{navigator.serviceWorker.register("sw.js");}catch(e){}
+}
+</script>
+</body>
+</html>

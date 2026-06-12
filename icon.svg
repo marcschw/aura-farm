@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity=".9"/>
+      <stop offset="55%" stop-color="#7c3aed" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#0b0b16" stop-opacity="1"/>
+    </radialGradient>
+    <linearGradient id="sprout" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a3e635"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="50%" stop-color="#22d3ee"/>
+      <stop offset="100%" stop-color="#a3e635"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="#0b0b16"/>
+  <circle cx="128" cy="128" r="104" fill="url(#glow)"/>
+  <circle cx="128" cy="128" r="92" fill="none" stroke="url(#ring)" stroke-width="8"/>
+  <path d="M128 196 L128 124" stroke="url(#sprout)" stroke-width="14" stroke-linecap="round"/>
+  <path d="M128 138 C 128 104, 100 88, 70 92 C 74 124, 100 140, 128 138 Z" fill="url(#sprout)"/>
+  <path d="M128 122 C 128 92, 152 76, 186 80 C 182 112, 156 126, 128 122 Z" fill="#a3e635"/>
+  <path d="M190 58 l5 12 12 5 -12 5 -5 12 -5 -12 -12 -5 12 -5 Z" fill="#fef08a"/>
+  <path d="M62 168 l4 9 9 4 -9 4 -4 9 -4 -9 -9 -4 9 -4 Z" fill="#67e8f9"/>
+  <path d="M76 56 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#e9d5ff"/>
+</svg>
