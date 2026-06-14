@@ -1,4 +1,4 @@
-const CACHE = 'aura-farm-v1';
+const CACHE = 'aura-farm-v2';
 const ASSETS = ['.', 'index.html', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', (e) => {
