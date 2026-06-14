@@ -1046,8 +1046,9 @@ state.prevLevel=levelFor(computeAura());
 saveState();
 lastAura=computeAura();
 renderAll();
-if("serviceWorker"in navigator&&location.protocol.startsWith("http")){
-  try{navigator.serviceWorker.register("sw.js");}catch(e){}
+// Unregister any old service workers to prevent stale cache issues
+if("serviceWorker"in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs=>{for(const r of regs)r.unregister();});
 }
 </script>
 </body>
