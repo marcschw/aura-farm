@@ -1,4 +1,4 @@
-const CACHE = 'aura-farm-v4';
+const CACHE = 'aura-farm-v5';
 const ASSETS = ['.', 'index.html', 'manifest.webmanifest', 'icon.svg'];
 
 self.addEventListener('install', (e) => {
@@ -15,18 +15,16 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  // Network-first: always try network, fall back to cache for offline
   e.respondWith(
-    caches.match(e.request).then((hit) => {
-      const fetched = fetch(e.request)
-        .then((res) => {
-          if (res.ok && new URL(e.request.url).origin === location.origin) {
-            const clone = res.clone();
-            caches.open(CACHE).then((c) => c.put(e.request, clone));
-          }
-          return res;
-        })
-        .catch(() => hit);
-      return hit || fetched;
-    })
+    fetch(e.request)
+      .then((res) => {
+        if (res.ok && new URL(e.request.url).origin === location.origin) {
+          const clone = res.clone();
+          caches.open(CACHE).then((c) => c.put(e.request, clone));
+        }
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
