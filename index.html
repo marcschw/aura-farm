@@ -716,7 +716,7 @@ function toggleSub(itemId,subId,ev){
 }
 
 /* ============ FILTER / SORT ============ */
-const filter={medium:null,block:null,quick:{essential:false,fast:false,open:false,games:false},search:"",sort:"tier"};
+const filter={medium:null,block:null,quick:{essential:false,fast:false,open:true,games:false},search:"",sort:"tier"};
 let vibeOrder=null;
 const expanded=new Set();
 function visibleItems(){
@@ -860,7 +860,7 @@ function renderControls(){
   sortSel.innerHTML=["tier","time","aura","vibe"].map(k=>'<option value="'+k+'"'+(filter.sort===k?" selected":"")+'>'+esc(t.sort[k==="time"?"time":k==="aura"?"aura":k==="vibe"?"vibe":"tier"])+'</option>').join("");
   const q=t.quick;
   $("#quickChips").innerHTML=
-    ['essential','fast','games'].map(k=>'<button class="chip-btn'+(filter.quick[k]?" on":"")+'" data-quick="'+k+'">'+esc(q[k])+'</button>').join("")
+    ['essential','fast','open','games'].map(k=>'<button class="chip-btn'+(filter.quick[k]?" on":"")+'" data-quick="'+k+'">'+esc(q[k])+'</button>').join("")
     +'<button class="chip-btn" data-random="1">'+esc(q.random)+'</button>';
   $("#mediumChips").innerHTML=
     '<button class="chip-btn'+(filter.medium===null?" on":"")+'" data-medium="">Alle</button>'
